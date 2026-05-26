@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Regulamin Sklepu | cvvtony.pl</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="/logo/{{ product.logo_filename or 'logo_cvvtony.jpg' }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: { velvet: '#0a0a0a', card: '#121212', neon: '#ff00ff' },
+                fontFamily: { grotesk: ['Space Grotesk', 'sans-serif'] }
+            }
+        }
+    }
+    </script>
+    <style>
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            position: relative;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            opacity: 0.03;
+            pointer-events: none;
+            z-index: 9999;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0%200%20200%20200'%20xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter%20id='noiseFilter'%3E%3CfeTurbulence%20type='fractalNoise'%20baseFrequency='0.65'%20numOctaves='3'%20stitchTiles='stitch'/%3E%3C/filter%3E%3Crect%20width='100%25'%20height='100%25'%20filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+    </style>
+</head>
+<body class="min-h-screen py-20 px-4">
+
+    <div class="max-w-3xl mx-auto bg-card border border-neutral-800 rounded-2xl p-8 sm:p-12 shadow-2xl relative z-10">
+        <!-- Back Link -->
+        <a href="/" class="inline-flex items-center gap-2 text-neutral-500 hover:text-neon transition-colors mb-8 text-sm">
+            <i class="fa-solid fa-arrow-left"></i> Wróć do strony głównej
+        </a>
+
+        <h1 class="text-3xl sm:text-4xl font-extrabold uppercase tracking-tight text-white mb-8 border-b border-neutral-800 pb-4">
+            Regulamin świadczenia usług drogą elektroniczną
+        </h1>
+
+        <div class="space-y-6 text-neutral-300 text-sm sm:text-base leading-relaxed">
+            <section>
+                <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-2">§ 1 Postanowienia ogólne</h2>
+                <p>Sklep internetowy działający pod adresem cvvtony.pl prowadzony jest przez podmiot określony w danych kontaktowych. Regulamin określa zasady korzystania ze sklepu, składania zamówień na produkty cyfrowe (PDF HUSTLER PACK), dostarczania zakupionych produktów oraz uprawnienia klienta do odstąpienia od umowy.</p>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-2">§ 2 Definicje</h2>
+                <ul class="list-disc list-inside space-y-1 ml-2">
+                    <li><strong>Sprzedawca</strong> — CVV TONY, adres e-mail: kontakt@cvvtony.pl</li>
+                    <li><strong>Klient</strong> — każda osoba fizyczna, prawna lub jednostka organizacyjna dokonująca zakupu.</li>
+                    <li><strong>Produkt</strong> — plik cyfrowy w formacie PDF o nazwie HUSTLER PACK.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-2">§ 3 Zakup i płatności</h2>
+                <p>1. Ceny podane na stronie są cenami brutto w złotych polskich (PLN).<br>
+                2. Płatności realizowane są za pośrednictwem zewnętrznego operatora Stripe. Dostępne metody płatności obejmują m.in. płatność kartą płatniczą, BLIK oraz Przelewy24.<br>
+                3. Umowę uważa się za zawartą z chwilą pomyślnego autoryzowania płatności przez operatora.</p>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-2">§ 4 Dostawa produktu</h2>
+                <p>1. Produkt dostarczany jest w formie cyfrowej jako link do pobrania wysyłany na adres e-mail podany przez Klienta podczas transakcji płatniczej.<br>
+                2. Link do pobrania jest generowany automatycznie i jest ważny przez 48 godzin od momentu zakupu oraz upoważnia do jednorazowego pobrania pliku PDF.</p>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-2">§ 5 Zwroty i reklamacje</h2>
+                <p>1. Zgodnie z art. 38 pkt 13 ustawy o prawach konsumenta, prawo do odstąpienia od umowy zawartej na odległość nie przysługuje konsumentowi w wypadku umów o dostarczanie treści cyfrowych, które nie są zapisane na nośniku materialnym, jeżeli spełnianie świadczenia rozpoczęło się za wyraźną zgodą konsumenta przed upływem terminu do odstąpienia od umowy i po poinformowaniu go przez przedsiębiorcę o utracie prawa odstąpienia od umowy.<br>
+                2. Wszelkie reklamacje dotyczące procesu płatności lub problemów z pobraniem pliku należy zgłaszać na adres e-mail: <strong>kontakt@cvvtony.pl</strong> lub w wiadomości prywatnej na profilu Instagram: <strong>@cvv_tony</strong>.</p>
+            </section>
+
+            <section>
+                <h2 class="text-lg font-bold text-white uppercase tracking-wider mb-2">§ 6 Postanowienia końcowe</h2>
+                <p>W sprawach nieuregulowanych niniejszym regulaminem mają zastosowanie odpowiednie przepisy prawa polskiego, w szczególności Kodeksu Cywilnego oraz Ustawy o prawach konsumenta.</p>
+            </section>
+        </div>
+
+        <!-- Footer inside block -->
+        <div class="mt-12 pt-6 border-t border-neutral-800 text-center text-xs text-neutral-500">
+            &copy; 2026 CVV TONY. Wszystkie prawa zastrzeżone.
+        </div>
+    </div>
+
+</body>
+</html>

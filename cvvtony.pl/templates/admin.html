@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel — cvvtony.pl</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="/logo/{{ product.logo_filename or 'logo_cvvtony.jpg' }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: { velvet: '#0a0a0a', card: '#121212', neon: '#ff00ff', 'neon-dark': '#cc00cc' },
+                fontFamily: { grotesk: ['Space Grotesk', 'sans-serif'] }
+            }
+        }
+    }
+    </script>
+    <style>
+        body { font-family: 'Space Grotesk', sans-serif; background: #0a0a0a; color: #fff; }
+        .glow-btn { box-shadow: 0 0 20px rgba(255,0,255,0.3); }
+        .glow-btn:hover { box-shadow: 0 0 30px rgba(255,0,255,0.5); }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- NAV -->
+<nav class="bg-velvet border-b border-neutral-800/50 sticky top-0 z-40">
+    <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+        <a href="/admin" class="font-bold tracking-widest uppercase text-sm">CVV<span class="text-neon">TONY</span> <span class="text-neutral-600 ml-2 text-xs">ADMIN</span></a>
+        {% if logged_in %}
+        <div class="flex gap-4 items-center">
+            <a href="/" target="_blank" class="text-neutral-500 hover:text-white text-xs"><i class="fa-solid fa-eye mr-1"></i>Podgląd strony</a>
+            <a href="/admin/logout" class="text-neutral-500 hover:text-red-400 text-xs"><i class="fa-solid fa-right-from-bracket mr-1"></i>Wyloguj</a>
+        </div>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="max-w-4xl mx-auto px-4 py-10">
+
+{% if message %}
+<div class="bg-card border border-neutral-800 rounded-xl p-4 mb-8 text-center text-sm">{{ message }}</div>
+{% endif %}
+
+{% if not logged_in %}
+<!-- LOGIN -->
+<div class="max-w-sm mx-auto mt-20">
+    <div class="bg-card border border-neutral-800 rounded-2xl p-8 text-center">
+        <div class="w-16 h-16 bg-neon/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <i class="fa-solid fa-lock text-neon text-2xl"></i>
+        </div>
+        <h1 class="text-xl font-bold uppercase tracking-wider mb-6">Panel Admin</h1>
+        <form method="POST" action="/admin/login">
+            <input type="password" name="password" placeholder="Hasło dostępu" required
+                   class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-3 text-sm mb-4 focus:border-neon focus:outline-none transition-colors placeholder-neutral-600">
+            <button type="submit" class="w-full glow-btn bg-gradient-to-r from-neon to-neon-dark text-white font-bold py-3 rounded-lg uppercase tracking-wider text-sm hover:scale-[1.02] transition-transform">
+                Zaloguj się
+            </button>
+        </form>
+    </div>
+</div>
+
+{% else %}
+<!-- ADMIN DASHBOARD -->
+<div x-data="{ tab: 'product' }" class="space-y-8">
+    <!-- TABS -->
+    <div class="flex gap-2 border-b border-neutral-800 pb-3">
+        <button @click="tab='product'" :class="tab==='product' ? 'text-neon border-neon' : 'text-neutral-500 border-transparent'" class="border-b-2 pb-2 px-4 text-sm font-semibold uppercase tracking-wider transition-colors">
+            <i class="fa-solid fa-pen mr-1"></i> Produkt
+        </button>
+        <button @click="tab='pdf'" :class="tab==='pdf' ? 'text-neon border-neon' : 'text-neutral-500 border-transparent'" class="border-b-2 pb-2 px-4 text-sm font-semibold uppercase tracking-wider transition-colors">
+            <i class="fa-solid fa-file-pdf mr-1"></i> PDF
+        </button>
+        <button @click="tab='instagram'" :class="tab==='instagram' ? 'text-neon border-neon' : 'text-neutral-500 border-transparent'" class="border-b-2 pb-2 px-4 text-sm font-semibold uppercase tracking-wider transition-colors">
+            <i class="fa-brands fa-instagram mr-1"></i> Instagram
+        </button>
+    </div>
+
+    <!-- PRODUCT TAB -->
+    <div x-show="tab==='product'">
+        <form method="POST" action="/admin/product" class="space-y-6">
+            <div class="bg-card border border-neutral-800 rounded-2xl p-6 space-y-5">
+                <h2 class="text-lg font-bold uppercase tracking-wider mb-2"><i class="fa-solid fa-tag text-neon mr-2"></i>Dane produktu</h2>
+                <div>
+                    <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Cena (PLN)</label>
+                    <input type="text" name="price" value="{{ product.price_display }}" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-3 text-sm focus:border-neon focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Nagłówek Hero</label>
+                    <input type="text" name="hero_headline" value="{{ product.hero_headline }}" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-3 text-sm focus:border-neon focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Podtytuł Hero</label>
+                    <textarea name="hero_subtext" rows="3" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-3 text-sm focus:border-neon focus:outline-none resize-none">{{ product.hero_subtext }}</textarea>
+                </div>
+                <div>
+                    <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Krótki opis (Stripe)</label>
+                    <input type="text" name="description" value="{{ product.description }}" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-3 text-sm focus:border-neon focus:outline-none">
+                </div>
+            </div>
+
+            <div class="bg-card border border-neutral-800 rounded-2xl p-6 space-y-6">
+                <h2 class="text-lg font-bold uppercase tracking-wider mb-2"><i class="fa-solid fa-grid-2 text-neon mr-2"></i>Metody (Siatka 4 kafelków)</h2>
+                {% for i in range(1, 5) %}
+                <div class="border-b border-neutral-800/60 pb-5 last:border-0 last:pb-0 space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Tytuł #{{ i }}</label>
+                            <input type="text" name="method_{{ i }}_title" value="{{ product|attr('method_' ~ i ~ '_title') }}" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Podtytuł #{{ i }} (Różowy tekst)</label>
+                            <input type="text" name="method_{{ i }}_subtitle" value="{{ product|attr('method_' ~ i ~ '_subtitle') }}" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs text-neutral-500 uppercase tracking-wider mb-1">Opis #{{ i }}</label>
+                        <textarea name="method_{{ i }}_desc" rows="3" class="w-full bg-velvet border border-neutral-700 rounded-lg px-4 py-2.5 text-sm focus:border-neon focus:outline-none resize-none">{{ product|attr('method_' ~ i ~ '_desc') }}</textarea>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="glow-btn bg-gradient-to-r from-neon to-neon-dark text-white font-bold py-3 px-10 rounded-xl uppercase tracking-wider text-sm hover:scale-[1.02] transition-transform">
+                <i class="fa-solid fa-check mr-2"></i>Zapisz zmiany
+            </button>
+        </form>
+    </div>
+
+    <!-- INSTAGRAM TAB -->
+    <div x-show="tab==='instagram'" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Wizualny Edytor -->
+        <form method="POST" action="/admin/product" class="space-y-6">
+            <div class="bg-card border border-neutral-800 rounded-2xl p-6 space-y-6">
+                <div>
+                    <h2 class="text-lg font-bold uppercase tracking-wider mb-1"><i class="fa-brands fa-instagram text-neon mr-2"></i>Profil Instagram</h2>
+                    <p class="text-xs text-neutral-500 mb-4">Edytuj statystyki i opisy bezpośrednio klikając na pola w poniższej makiecie profilu.</p>
+                </div>
+
+                <!-- Live Instagram Mockup Card -->
+                <div class="max-w-md mx-auto bg-velvet border border-neutral-800/80 rounded-2xl overflow-hidden shadow-2xl p-5">
+                    <!-- IG Handle Input Field -->
+                    <div class="flex items-center gap-2 mb-4 bg-card/60 px-3 py-1.5 rounded-lg border border-neutral-800">
+                        <span class="text-xs text-neutral-500 uppercase font-semibold">@</span>
+                        <input type="text" name="ig_username" value="{{ product.ig_username }}" class="bg-transparent text-xs text-white focus:outline-none w-full" placeholder="nazwa_uzytkownika">
+                    </div>
+
+                    <div class="flex items-center gap-4 mb-5">
+                        <div class="flex-shrink-0">
+                            <div class="w-[72px] h-[72px] rounded-full p-[3px] bg-gradient-to-tr from-yellow-400 via-red-500 to-purple-600">
+                                <div class="w-full h-full rounded-full bg-neutral-900 overflow-hidden border-[3px] border-neutral-900 flex items-center justify-center">
+                                    <img src="/logo/{{ product.logo_filename or 'logo_cvvtony.jpg' }}" alt="Preview" class="w-full h-full object-cover">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-1 grid grid-cols-3 text-center gap-2">
+                            <div>
+                                <input type="text" name="ig_posts_count" value="{{ product.ig_posts_count }}" class="w-full text-center font-bold text-white text-sm bg-transparent border-b border-dashed border-neutral-700 focus:border-neon focus:outline-none py-0.5" placeholder="5">
+                                <p class="text-neutral-500 text-[10px] mt-1">postów</p>
+                            </div>
+                            <div>
+                                <input type="text" name="ig_followers_count" value="{{ product.ig_followers_count }}" class="w-full text-center font-bold text-white text-sm bg-transparent border-b border-dashed border-neutral-700 focus:border-neon focus:outline-none py-0.5" placeholder="13,2k">
+                                <p class="text-neutral-500 text-[10px] mt-1">obserwujących</p>
+                            </div>
+                            <div>
+                                <input type="text" name="ig_following_count" value="{{ product.ig_following_count }}" class="w-full text-center font-bold text-white text-sm bg-transparent border-b border-dashed border-neutral-700 focus:border-neon focus:outline-none py-0.5" placeholder="0">
+                                <p class="text-neutral-500 text-[10px] mt-1">obserwowani</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1 mb-4">
+                        <div>
+                            <input type="text" name="ig_bio_title" value="{{ product.ig_bio_title }}" class="w-full font-bold text-sm text-white bg-transparent border-b border-dashed border-neutral-700 focus:border-neon focus:outline-none py-0.5" placeholder="Bóg Zarabiania">
+                        </div>
+                        <div>
+                            <input type="text" name="ig_bio_text_1" value="{{ product.ig_bio_text_1 }}" class="w-full text-neutral-400 text-xs bg-transparent border-b border-dashed border-neutral-700 focus:border-neon focus:outline-none py-0.5" placeholder="hustler, top metody w PL">
+                        </div>
+                        <div>
+                            <input type="text" name="ig_bio_text_2" value="{{ product.ig_bio_text_2 }}" class="w-full text-neutral-400 text-xs bg-transparent border-b border-dashed border-neutral-700 focus:border-neon focus:outline-none py-0.5" placeholder="NOWY PAKIET METOD">
+                        </div>
+                    </div>
+
+                    <div class="block w-full text-center bg-[#0095f6]/50 text-white/50 font-semibold text-xs py-2 rounded-lg pointer-events-none">
+                        Przycisk Obserwuj (Podgląd)
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="glow-btn bg-gradient-to-r from-neon to-neon-dark text-white font-bold py-3 px-10 rounded-xl uppercase tracking-wider text-sm hover:scale-[1.02] transition-transform">
+                <i class="fa-solid fa-check mr-2"></i>Zapisz profil Instagram
+            </button>
+        </form>
+
+        <!-- Zmiana Zdjęcia Profilowego -->
+        <div class="bg-card border border-neutral-800 rounded-2xl p-6 h-fit space-y-6">
+            <div>
+                <h2 class="text-lg font-bold uppercase tracking-wider mb-1"><i class="fa-solid fa-image text-neon mr-2"></i>Zdjęcie Profilowe</h2>
+                <p class="text-xs text-neutral-500 mb-4">Zmień awatar profilu. Zmiana zaktualizuje również favicon (ikonkę) Twojej strony.</p>
+            </div>
+
+            <div class="bg-velvet border border-neutral-700 rounded-lg p-4 flex items-center gap-4">
+                <div class="w-16 h-16 rounded-full overflow-hidden flex-shrink-0 border-2 border-neon/50">
+                    <img src="/logo/{{ product.logo_filename or 'logo_cvvtony.jpg' }}" alt="Current Logo" class="w-full h-full object-cover">
+                </div>
+                <div>
+                    <p class="text-sm font-medium">Aktualne zdjęcie</p>
+                    <p class="text-xs text-neutral-500">Rozmiar 1:1 (kwadrat) da najlepsze efekty.</p>
+                </div>
+            </div>
+
+            <form method="POST" action="/admin/upload-logo" enctype="multipart/form-data" class="space-y-4">
+                <div class="border-2 border-dashed border-neutral-700 rounded-xl p-8 text-center hover:border-neon/50 transition-colors">
+                    <i class="fa-solid fa-cloud-arrow-up text-neutral-600 text-3xl mb-3"></i>
+                    <p class="text-neutral-500 text-sm mb-3">Wybierz nowe zdjęcie (PNG, JPG, WEBP)</p>
+                    <input type="file" name="logo_file" accept="image/*" required class="text-sm text-neutral-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/10 file:text-neon file:font-semibold file:text-xs file:uppercase file:tracking-wider hover:file:bg-neon/20 file:cursor-pointer">
+                </div>
+                <button type="submit" class="glow-btn bg-gradient-to-r from-neon to-neon-dark text-white font-bold py-3 px-8 rounded-xl uppercase tracking-wider text-sm hover:scale-[1.02] transition-transform">
+                    <i class="fa-solid fa-upload mr-2"></i>Wgraj nowe zdjęcie
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- PDF TAB -->
+    <div x-show="tab==='pdf'">
+        <div class="bg-card border border-neutral-800 rounded-2xl p-6">
+            <h2 class="text-lg font-bold uppercase tracking-wider mb-4"><i class="fa-solid fa-file-pdf text-neon mr-2"></i>Plik PDF produktu</h2>
+            {% if product.pdf_filename %}
+            <div class="bg-velvet border border-neutral-700 rounded-lg p-4 mb-6 flex items-center gap-3">
+                <i class="fa-solid fa-file-pdf text-red-500 text-2xl"></i>
+                <div>
+                    <p class="text-sm font-medium">{{ product.pdf_filename }}</p>
+                    <p class="text-xs text-neutral-500">Aktualnie wgrany plik</p>
+                </div>
+            </div>
+            {% else %}
+            <div class="bg-velvet border border-yellow-900/50 rounded-lg p-4 mb-6 text-yellow-400 text-sm">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Nie wgrano jeszcze pliku PDF. Klienci nie mogą pobrać produktu.
+            </div>
+            {% endif %}
+            <form method="POST" action="/admin/upload-pdf" enctype="multipart/form-data" class="space-y-4">
+                <div class="border-2 border-dashed border-neutral-700 rounded-xl p-8 text-center hover:border-neon/50 transition-colors">
+                    <i class="fa-solid fa-cloud-arrow-up text-neutral-600 text-3xl mb-3"></i>
+                    <p class="text-neutral-500 text-sm mb-3">Wybierz plik PDF do wgrania</p>
+                    <input type="file" name="pdf_file" accept=".pdf" required class="text-sm text-neutral-400 file:mr-3 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-neon/10 file:text-neon file:font-semibold file:text-xs file:uppercase file:tracking-wider hover:file:bg-neon/20 file:cursor-pointer">
+                </div>
+                <button type="submit" class="glow-btn bg-gradient-to-r from-neon to-neon-dark text-white font-bold py-3 px-8 rounded-xl uppercase tracking-wider text-sm hover:scale-[1.02] transition-transform">
+                    <i class="fa-solid fa-upload mr-2"></i>Wgraj PDF
+                </button>
+            </form>
+        </div>
+    </div>
+
+    </div>
+</div>
+{% endif %}
+
+</div>
+</body>
+</html>
